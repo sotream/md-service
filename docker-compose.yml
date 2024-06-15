@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: always
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_PASSWORD: pa$$w0Rd
+      POSTGRES_USER: sotream
+      POSTGRES_DB: sotream
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - ./database:/var/lib/postgresql/data

@@ -29,3 +29,23 @@ This application is a RESTful API for market data with WebSocket support.
 ```bash
 mvn -N io.takari:maven:wrapper
 ```
+5. Create `application.yml`
+
+```yaml
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://[host]:[port]/[db]
+    username: [username]
+    password: [password]
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+```
