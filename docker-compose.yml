@@ -5,7 +5,7 @@ services:
     ports:
       - 5433:5432
     environment:
-      POSTGRES_PASSWORD: pa$$w0Rd
+      POSTGRES_PASSWORD: dS0zr52uB2f2
       POSTGRES_USER: sotream
       POSTGRES_DB: sotream
     healthcheck:

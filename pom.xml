@@ -90,12 +90,12 @@
             <plugin>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
-                <version>4.6.2</version>
+                <version>4.28.0</version>
                 <configuration>
-                    <changeLogFile>changelog/db.changelog-master.xml</changeLogFile>
+                    <changeLogFile>src/main/resources/changelog/db.changelog-master.xml</changeLogFile>
                     <url>jdbc:postgresql://localhost:5433/sotream</url>
                     <username>sotream</username>
-                    <password>pa$$w0Rd</password>
+                    <password>dS0zr52uB2f2</password>
                     <driver>org.postgresql.Driver</driver>
                 </configuration>
             </plugin>
