@@ -1,0 +1,5 @@
+driver: org.postgresql.Driver
+url: jdbc:postgresql://localhost:5433/sotream
+username: sotream
+password: dS0zr52uB2f2
+changeLogFile: src/main/resources/changelog/db.changelog-master.xml

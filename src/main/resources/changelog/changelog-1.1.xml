@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.21.xsd">
 
-    <include file="changelog/changelog-1.0.xml"/>
-    <include file="changelog/changelog-1.1.xml"/>
+    <changeSet id="2" author="sotream">
+        <sqlFile path="scripts/changelog-1.1.sql" relativeToChangelogFile="true"/>
+    </changeSet>
 
 </databaseChangeLog>

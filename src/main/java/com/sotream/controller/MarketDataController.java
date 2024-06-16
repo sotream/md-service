@@ -14,7 +14,7 @@ import com.sotream.service.MarketDataService;
 @RequestMapping("/api/market-data")
 public class MarketDataController {
 
-    private static final Logger logger = LogManager.getLogger("MarketDataController");
+    private static final Logger logger = LogManager.getLogger(MarketDataController.class);
     private final MarketDataService marketDataService;
 
     public MarketDataController(MarketDataService marketDataService) {
