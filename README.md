@@ -30,6 +30,12 @@ This application is a RESTful API for market data with WebSocket support.
 mvn -N io.takari:maven:wrapper
 ```
 
+5. Create `config/application-<profile>.yml` file. Generate api key on [finnhub.io](https://finnhub.io/dashboard)
+```dotenv
+FINNHUB_API_KEY: <YOR API KEY>
+
+```
+
 ## Migration commands
 
 1. Run migration

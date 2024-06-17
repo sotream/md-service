@@ -6,6 +6,7 @@ import com.sotream.dto.MarketTradeDTO;
 import jakarta.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class MarketDataWebSocketHandler implements WebSocketHandler {
 
     private static final Logger logger = LogManager.getLogger(MarketDataWebSocketHandler.class);
 
+    @Value("${FINNHUB_API_KEY}")
+    private String FINNHUB_API_KEY;
+
     private final MarketDataService marketDataService;
     private final ObjectMapper objectMapper;
     private static final String FINNHUB_URL = "wss://ws.finnhub.io?token=";
@@ -39,7 +43,7 @@ public class MarketDataWebSocketHandler implements WebSocketHandler {
     public void connectToWebSocket() {
         ReactorNettyWebSocketClient client = new ReactorNettyWebSocketClient();
 
-        client.execute(URI.create(FINNHUB_URL), this).subscribe(
+        client.execute(URI.create(FINNHUB_URL+FINNHUB_API_KEY), this).subscribe(
                 null,
                 error -> logger.error("WebSocket connection error: {}", error.getMessage()),
                 () -> logger.info("WebSocket connection established")
@@ -58,7 +62,7 @@ public class MarketDataWebSocketHandler implements WebSocketHandler {
 
         Mono<Void> receiveMessages = session.receive()
                 .map(WebSocketMessage::getPayloadAsText)
-                .doOnNext(payload -> logger.info("Received message: {}", payload))
+                .doOnNext(payload -> logger.debug("Received message: {}", payload))
                 .filter(this::isNotPingMessage)
                 .flatMap(this::handleIncomingMessage)
                 .then();
@@ -77,7 +81,7 @@ public class MarketDataWebSocketHandler implements WebSocketHandler {
                     marketDataService.saveMarketData(marketTrade);
                 }
 
-                logger.info("Market data saved: {}", marketDataDTO);
+                logger.debug("Market data saved: {}", marketDataDTO);
             }
         });
     }
