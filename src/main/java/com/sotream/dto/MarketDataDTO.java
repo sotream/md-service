@@ -1,5 +1,11 @@
 package com.sotream.dto;
 
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record MarketDataDTO(Long id, String symbol, Double price, LocalDateTime timestamp) {}
+import java.util.List;
+
+public record MarketDataDTO(
+        @JsonProperty("data") List<MarketTradeDTO> data,
+        @JsonProperty("type") String type
+) {
+}

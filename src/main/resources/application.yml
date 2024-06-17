@@ -2,13 +2,13 @@ server:
   port: 8080
 
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5433/sotream
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5433/sotream
     username: sotream
     password: dS0zr52uB2f2
-    driver-class-name: org.postgresql.Driver
-
-  jpa:
-    hibernate:
-      ddl-auto: none
-    open-in-view: false
+    pool:
+      enabled: true
+      initial-size: 5
+      max-size: 10
+      max-idle-time: 15m
+      validation-query: SELECT 1

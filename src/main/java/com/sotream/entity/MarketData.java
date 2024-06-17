@@ -1,12 +1,8 @@
 package com.sotream.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
+
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "market_data")
@@ -16,11 +12,11 @@ public class MarketData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String symbol;
-    private Double price;
-
-    @Column(name = "timestamp", columnDefinition = "TIMESTAMP")
-    private LocalDateTime timestamp = LocalDateTime.now();
+    private Double c;
+    private Double p;
+    private String s;
+    private OffsetDateTime t;
+    private Double v;
 
     // Getters and Setters
 
@@ -32,27 +28,43 @@ public class MarketData {
         this.id = id;
     }
 
+    public Double getTradeConditions() {
+        return c;
+    }
+
+    public void setTradeConditions(Double c) {
+        this.c = c;
+    }
+
+    public Double getLastPrice() {
+        return p;
+    }
+
+    public void setLastPrice(Double p) {
+        this.p = p;
+    }
+
     public String getSymbol() {
-        return symbol;
+        return s;
     }
 
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
+    public void setSymbol(String s) {
+        this.s = s;
     }
 
-    public Double getPrice() {
-        return price;
+    public OffsetDateTime getMDDate() {
+        return t;
     }
 
-    public void setPrice(Double price) {
-        this.price = price;
+    public void setMDDate(OffsetDateTime t) {
+        this.t = t;
     }
 
-    public LocalDateTime getTimestamp() {
-        return timestamp;
+    public Double getVolume() {
+        return v;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
+    public void setVolume(Double v) {
+        this.v = v;
     }
 }

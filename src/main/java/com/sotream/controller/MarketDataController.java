@@ -1,14 +1,17 @@
 package com.sotream.controller;
 
+import com.sotream.dto.MarketTradeDTO;
+import com.sotream.service.MarketDataService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
-import java.util.List;
-
-import com.sotream.dto.MarketDataDTO;
-import com.sotream.service.MarketDataService;
+import java.time.OffsetDateTime;
 
 @RestController
 @RequestMapping("/api/market-data")
@@ -22,14 +25,20 @@ public class MarketDataController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MarketDataDTO>> getAllMarketData() {
-        logger.debug("Call [GET] /api/market-data");
+    public Flux<MarketTradeDTO> getAllMarketData(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size,
+            @RequestParam(name = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime startDate,
+            @RequestParam(name = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime endDate
+    ) {
+        logger.debug("Call [GET] /api/market-data?page={}&size={}&startDate={}&endDate={}", page, size, startDate, endDate);
 
-        return ResponseEntity.ok(marketDataService.getAllMarketData());
-    }
-
-    @PostMapping
-    public ResponseEntity<MarketDataDTO> addMarketData(@RequestBody MarketDataDTO marketDataDTO) {
-        return ResponseEntity.ok(marketDataService.addMarketData(marketDataDTO));
+        if (startDate != null && endDate != null) {
+            // Query by date range
+            return marketDataService.getMarketDataByDateRange(startDate, endDate);
+        } else {
+            // Default: Get all with pagination
+            return marketDataService.getAllMarketData(page, size);
+        }
     }
 }

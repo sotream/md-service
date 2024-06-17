@@ -1,1 +1,1 @@
-CREATE INDEX idx_name ON market_data (symbol);
+CREATE INDEX idx_name ON market_data (s);

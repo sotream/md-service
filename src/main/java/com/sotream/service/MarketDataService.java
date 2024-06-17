@@ -1,42 +1,73 @@
 package com.sotream.service;
 
-import com.sotream.dto.MarketDataDTO;
+import com.sotream.dto.MarketTradeDTO;
 import com.sotream.entity.MarketData;
 import com.sotream.repository.MarketDataRepository;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 @Service
 public class MarketDataService {
 
+    private static final Logger logger = LogManager.getLogger(MarketDataService.class);
     private final MarketDataRepository marketDataRepository;
 
     public MarketDataService(MarketDataRepository marketDataRepository) {
         this.marketDataRepository = marketDataRepository;
     }
 
-    public List<MarketDataDTO> getAllMarketData() {
-        return marketDataRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+    public Flux<MarketTradeDTO> getAllMarketData(int page, int size) {
+        return marketDataRepository.findBy(PageRequest.of(page, size))
+                .map(this::convertToDTO);
     }
 
-    public MarketDataDTO addMarketData(MarketDataDTO marketDataDTO) {
+    public Flux<MarketTradeDTO> getMarketDataByDateRange(OffsetDateTime startDate, OffsetDateTime endDate) {
+        return marketDataRepository.findByDateRange(startDate, endDate)
+                .map(this::convertToDTO);
+    }
+
+    public void saveMarketData(MarketTradeDTO marketDataDTO) {
         MarketData marketData = new MarketData();
-        marketData.setSymbol(marketDataDTO.symbol());
-        marketData.setPrice(marketDataDTO.price());
-        MarketData savedData = marketDataRepository.save(marketData);
-        return convertToDTO(savedData);
+        marketData.setTradeConditions(marketDataDTO.c());
+        marketData.setLastPrice(marketDataDTO.p());
+        marketData.setSymbol(marketDataDTO.s());
+        marketData.setMDDate(convertToOffsetDateTime(marketDataDTO.t()));
+        marketData.setVolume(marketDataDTO.v());
+
+        marketDataRepository.save(marketData)
+                .doOnError(error -> logger.error("Error saving market data: {}", error.getMessage()))
+                .subscribe();
     }
 
-    private MarketDataDTO convertToDTO(MarketData marketData) {
-        return new MarketDataDTO(
-                marketData.getId(),
+    private MarketTradeDTO convertToDTO(MarketData marketData) {
+        return new MarketTradeDTO(
+                marketData.getTradeConditions(),
+                marketData.getLastPrice(),
                 marketData.getSymbol(),
-                marketData.getPrice(),
-                marketData.getTimestamp()
+                convertToMillis(marketData.getMDDate()),
+                marketData.getVolume()
         );
+    }
+
+    private OffsetDateTime convertToOffsetDateTime(Long millis) {
+        if (millis == null) {
+            return null;
+        }
+        return OffsetDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneOffset.UTC);
+    }
+
+    private Long convertToMillis(OffsetDateTime dateTime) {
+        if (dateTime == null) {
+            return null;
+        }
+        return dateTime.toInstant().toEpochMilli();
     }
 }
